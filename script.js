@@ -159,7 +159,8 @@ function initStatsCounter() {
     const stats = document.querySelectorAll('.stat-value');
     stats.forEach(stat => {
         const element = stat;
-        const target = parseInt(element.dataset.target || '0', 10);
+        const target = parseFloat(element.dataset.target || '0');
+        const isDecimal = target % 1 !== 0;
         gsap.to(element, {
             scrollTrigger: {
                 trigger: element,
@@ -167,10 +168,11 @@ function initStatsCounter() {
             },
             innerHTML: target,
             duration: 1.5,
-            snap: { innerHTML: 1 },
+            snap: { innerHTML: 0.1 },
             ease: 'power2.out',
             onUpdate: function () {
-                element.textContent = Math.ceil(this.targets()[0]).toString();
+                const value = this.targets()[0].innerHTML;
+                element.textContent = isDecimal ? value.toFixed(1) : Math.ceil(value);
             }
         });
     });
